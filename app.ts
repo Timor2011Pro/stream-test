@@ -10,6 +10,8 @@ if (!STREAM_KEY) {
 }
 
 const RTMP_URL = `rtmp://live.twitch.tv/app/${STREAM_KEY}`;
+const drawtext =
+"drawtext=text='%{localtime\\:%H\\\\\\:%M\\\\\\:%S}':x=20:y=20:fontsize=100:fontcolor=white:box=1:boxcolor=black@0.5";
 
 if (process.env.STREAM === "image") {
   console.log("Streaming image...");
@@ -67,9 +69,11 @@ if (process.env.STREAM === "video") {
 
   // Video
   const ffmpeg = spawn("ffmpeg", [
+    "-stream_loop",
+    "-1",
     "-re", // speel af op normale snelheid
     "-i",
-    "data/images/private/video.mp4",
+    "data/images/private/video.mkv",
 
     "-c:v",
     "libx264",
@@ -83,6 +87,9 @@ if (process.env.STREAM === "video") {
 
     "-pix_fmt",
     "yuv420p",
+
+    "-vf",
+    drawtext,
 
     "-f",
     "flv",
